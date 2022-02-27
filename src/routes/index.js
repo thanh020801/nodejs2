@@ -1,14 +1,14 @@
 const express = require('express')
-const contacts = require('../controllers/index.js')
+const productRouter = require('./product.Router.js')
+const adminRouter = require('./admin.Router.js')
+const userRouter = require('./user.Router.js')
+
 
 function route(app){
-    app.get('/',contacts.findAll)
-    app.post(contacts.create)
-    // app.get('/favorite',contacts.findAllFavorite)
-    app.get('/:id', contacts.findOne)
-    app.put('/:id', contacts.update)
-    app.delete('/:id', contacts.delete)
-    app.delete('/', contacts.deleteAll)
+
+    app.use('/product', productRouter)
+    app.use('/admin', adminRouter)
+    app.use('/', userRouter)
 }
    
 module.exports = route
