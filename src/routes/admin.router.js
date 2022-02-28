@@ -4,7 +4,7 @@ const adminControllers = require('../controllers/admin.controller.js')
 
 const router = express.Router()
 
-router.get('/product/create', adminControllers.create)
+router.post('/product/create', adminControllers.create)
 router.get('/product/:id', adminControllers.findOne)
 router.put('/product/:id', adminControllers.update)
 router.delete('/product/:id', adminControllers.delete)
