@@ -38,10 +38,19 @@ const product = new mongoose.Schema({
 		default: "",
 	},
 
+	img: {
+		type: String,
+		default: "",
+	},
+
+
 	detail: {
 		type: String,
 		default: "",
 	},
+	amounts:{
+		type: Number,
+	}
 },
 { timestamps: true }
 )

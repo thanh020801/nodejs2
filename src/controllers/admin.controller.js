@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const { BadRequestError } = require('../error.js')
 const handlePromise = require('../helpers/helpers')
 const  products = require('../models/product.model.js')
-
+const  adminManager = require('../models/admin.model.js')
 
 class AdminControllers {
 
@@ -17,8 +17,9 @@ class AdminControllers {
             brand: req.body.brand,
             color: req.body.color,
             size: req.body.size,
+            img: req.body.img,
+            amounts: req.body.amounts,
             detail: req.body.detail,
-            dateCreate: req.body.dateCreate,
         })
 
 
@@ -29,6 +30,7 @@ class AdminControllers {
         //     brand: "bitis",
         //     color: "White",
         //     size: "28",
+        //     img: "........"
         //     detail: "Mẫu giày đẹp với đường nét vô cùng tinh tế.",
         // })
 
@@ -143,8 +145,82 @@ class AdminControllers {
     }
 
 
-	async dashboard(req,res){
-	    res.send({ massage: "dashboard handler"})
-	}
+    async dashboard(req,res,next){
+        const condition = { }
+        const { name } = req.query
+        if(name){
+            condition.name = { $regex: new RegExp(name), $options: "i"}
+        }
+
+        const [error,documents] = await handlePromise(adminManager.find(condition))
+        if(error){
+            return next(new BadRequestError(500,
+                "An error occurred while retrieving products"))
+        }
+        return res.send(documents)
+    }
+
+
 }
 module.exports = new AdminControllers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //     async dashboard(req,res,next){
+    //     // if(!req.body.name){
+    //     //     return next(new BadRequestError(400, "Name can not be empty"))           
+    //     // }
+    //     // const product = new products({
+    //     //     name: req.body.name,
+    //     //     price: req.body.price,
+    //     //     discount: req.body.discount,
+    //     //     brand: req.body.brand,
+    //     //     color: req.body.color,
+    //     //     size: req.body.size,
+    //     //     img: req.body.img,
+    //     //     amounts: req.body.amounts,
+    //     //     detail: req.body.detail,
+    //     // })
+
+
+    //     const manager = new adminManager({
+    //         income: 50000000,
+    //         numbersAccess: 50,
+    //         numbersProductBuy: 30,
+    //         totalUser: 500,
+    //         totalProduct: 1000,
+    //     })
+
+    //     const [error, document] = await handlePromise(manager.save())
+    //     if(error){
+    //         console.log(error)
+    //         return next(new BadRequestError(500, 
+    //             "An error occurred while creating the products"))
+    //     }
+    //     return res.send(document)
+    // }
