@@ -3,6 +3,7 @@ const { BadRequestError } = require('../error.js')
 const handlePromise = require('../helpers/helpers')
 const  products = require('../models/product.model.js')
 const  adminManager = require('../models/admin.model.js')
+const  user = require('../models/user.model.js')
 
 class AdminControllers {
 
@@ -15,6 +16,7 @@ class AdminControllers {
             price: req.body.price,
             discount: req.body.discount,
             brand: req.body.brand,
+            category: req.body.category,
             color: req.body.color,
             size: req.body.size,
             img: req.body.img,
@@ -117,7 +119,7 @@ class AdminControllers {
     }
 
     async update(req,res,next){
-        if(Object.keys(res.body).length === 0){
+        if(Object.keys(req.body).length === 0){
             return next(new BadRequestError(400,
                 "Data to update can to be empty"))
         }
@@ -131,7 +133,6 @@ class AdminControllers {
                 new: true,
             })
         )
-
         if(error) {
             return next(new BadRequestError(500,
                 `Error updating products with id=${req.params.id}`))
@@ -159,8 +160,69 @@ class AdminControllers {
         }
         return res.send(documents)
     }
+// ********************************************************************
+    async findAllUser(req,res,next){
+        const condition = { }
+        const { name } = req.query
+        if(name){
+            condition.name = { $regex: new RegExp(name), $options: "i"}
+        }
 
+        const [error,documents] = await handlePromise(user.find(condition))
+        if(error){
+            return next(new BadRequestError(500,
+                "An error occurred while retrieving products"))
+        }
+        return res.send(documents)
+    }
 
+    async deleteUser(req,res,next){
+        const { id } = req.params
+        const condition = {
+            _id:id && mongoose.isValidObjectId(id) ? id:null,
+        }
+
+        const [error, document] = await handlePromise(
+            user.findOneAndDelete(condition)
+        )
+
+        if(error){
+            return next(new BadRequestError(500,
+                `Could not delete products with id=${req.params.id}`))
+        }
+
+        if(!document){
+            return next(new BadRequestError(404, "products not Found"))
+        }
+        return res.send({message: "products was delete successfully", })
+    }
+
+    async updateUser(req,res,next){
+        if(Object.keys(req.body).length === 0){
+            return next(new BadRequestError(400,
+                "Data to update can to be empty"))
+        }
+        const { id } = req.params
+        const condition = {
+            _id: id && mongoose.isValidObjectId(id) ? id : null,
+        }
+
+        const [error, document] = await handlePromise(
+            user.findOneAndUpdate(condition, req.body, {
+                new: true,
+            })
+        )
+        if(error) {
+            return next(new BadRequestError(500,
+                `Error updating products with id=${req.params.id}`))
+        }
+
+        if(!document){
+            return next(new BadRequestError(404, "products not Found"))
+        }
+
+        return res.send({ massage: "products was update successfully",})
+    }
 }
 module.exports = new AdminControllers
 

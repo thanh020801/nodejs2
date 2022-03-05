@@ -1,6 +1,8 @@
 const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose')
+const cookieParser = require('cookie-parser')
+
 
 const router = require('./src/routes')
 const config = require('./src/config')
@@ -10,6 +12,7 @@ const { BadRequestError, handleError } = require("./src/error")
 const PORT = config.app.port
 const URI = config.db.uri
 const app = express()
+
 
 app.use(cors())
 app.use(express.json())

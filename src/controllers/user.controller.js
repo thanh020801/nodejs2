@@ -7,59 +7,42 @@ const  userAccount = require('../models/user.model.js')
 
 class UserControllers {
 
-    // async addCart(req,res,next){
-    //     if(Object.keys(res.body).length === 0){
-    //         return next(new BadRequestError(400,
-    //             "Data to update can to be empty"))
-    //     }
-    //     const { id } = req.params
-    //     const condition = {
-    //         _id: id && mongoose.isValidObjectId(id) ? id : null,
-    //     }
+    async addCart(req,res,next){
+        if(Object.keys(req.body).length === 0){
+            return next(new BadRequestError(400,
+                "Data to update can to be empty"))
+        }
+        const { id } = req.params
+        const condition = {
+            _id: id && mongoose.isValidObjectId(id) ? id : null,
+        }
 
-    //     const [error, document] = await handlePromise(
-    //         userAccount.findOneAndUpdate(condition, req.body, {
-    //             new: true,
-    //         })
-    //     )
+        const [error, document] = await handlePromise(
+            userAccount.findOneAndUpdate(
+                condition, req.body ,{new: true,},
+            )
+        )
 
-    //     if(error) {
-    //         return next(new BadRequestError(500,
-    //             `Error updating contact with id=${req.params.id}`))
-    //     }
+        if(error) {
+            return next(new BadRequestError(500,
+                `Error updating contact with id=${req.params.id}`))
+        }
 
-    //     if(!document){
-    //         return next(new BadRequestError(404, "Contact not Found"))
-    //     }
+        if(!document){
+            return next(new BadRequestError(404, "Contact not Found"))
+        }
 
-    //     return res.send({ massage: "Contact was update successfully",})
-    // }
-    async addCart(req,res){
-	    res.send({ massage: "buy Cart product"})
-	}
+        return res.send({ massage: "Contact was update successfully",})
+    }
+ //    async addCart(req,res){
+	//     res.send({ massage: "buy Cart product"})
+	// }
     async buy(req,res){
 	    res.send({ massage: "buy Cart product"})
 	}
 
 
-    async login(req,res,next){
-        const { userName, password } = req.params
-        const condition = {
-            userName: userName,
-            password: password,
-        }
 
-        const [error,document] = await handlePromise(userAccount.findOne(condition))
-
-        if(error){
-            return next(new BadRequestError(500,
-                `Error retrieving contact with id=${req.params.id}`))
-        }
-        if(!document){
-            return next(new BadRequestError(404, "Login Error"))
-        }
-        return res.send(document)
-    }
 
 
 	async createUserAccount(req,res,next){

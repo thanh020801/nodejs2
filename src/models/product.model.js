@@ -27,7 +27,10 @@ const product = new mongoose.Schema({
 		type: String,
 		default: "",
 	},
-
+	category: {
+		type: String,
+		default: "",
+	},
 	color: {
 		type: String,
 		default: "",

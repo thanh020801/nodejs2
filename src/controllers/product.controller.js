@@ -37,9 +37,27 @@ class ProductControllers {
         }
         return res.send(document)
     }
+    async findAllCart(req,res,next){
+        const condition = { }
+        const { cart } = req.body
+        if(cart){
+            condition.cart.id = { $regex: new RegExp(name), $options: "i"}
+        }
 
-	// async detail(req,res){
-	//     res.send({ massage: "detail porduct handler"})
-	// }
+        const [error,documents] = await handlePromise(products.find(condition))
+        if(error){
+            return next(new BadRequestError(500,
+                "An error occurred while retrieving products"))
+        }
+        return res.send(documents)
+    }
+
+	async detail(req,res){
+	    res.send({ massage: "detail porduct handler"})
+	}
 }
 module.exports = new ProductControllers
+
+
+// 621ce8016fd2b3a9143bffa9
+// 621de0ea7c0e0e112622fe2c
